@@ -1,19 +1,16 @@
-{print} = require 'util'
 {spawn} = require 'child_process'
-fs = require 'fs'
-
 
 build = (callback) ->
-    child = spawn 'coffee', ['-c', '-o', 'out/', 'src/']
+    coffee = spawn 'coffee', ['-c', 'index.coffee']
 
-    child.stderr.on 'data', (data) ->
-        console.error data.toString()
+    coffee.stderr.on 'data', (data) ->
+        process.stderr.write data.toString()
 
-    child.stdout.on 'data', (data) ->
-        console.info data.toString()
+    coffee.stdout.on 'data', (data) ->
+        process.stdout.write data.toString()
 
-    child.on 'exit', (rc) ->
-        console.log "Build done with rc =", rc
-        callback?() if rc is 0
+    coffee.on 'exit', (code) ->
+        console.log "Build done, rc:", code
 
-task 'build', '', -> build()
+
+task 'build', 'Build', -> build()
