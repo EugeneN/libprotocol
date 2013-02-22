@@ -3,10 +3,11 @@
 Implementations = {}
 Protocols = {}
 THIS = 'this'
+CONS = '*cons*'
 
 DEFAULT_PROTOCOLS = ['IDom', 'INucleus']
 
-{partial} = require 'libprotein'
+{partial, is_array} = require 'libprotein'
 
 
 get_protocol = (p) ->
@@ -33,14 +34,14 @@ get_method = (ns, method_name) ->
         throw "No such method"
 
 get_meta = (ns, method_name) ->
-    [_, _, meta...] = get_method ns, method_name
-    meta
+    [_, _, meta] = get_method ns, method_name
+    meta or {}
 
-is_any = (prop, ns, method_name) -> prop in (get_meta ns, method_name)
+get_meta_key = (prop, ns, method_name) -> (get_meta ns, method_name)[prop]
 
-is_async = partial is_any, 'async'
+is_async = partial get_meta_key, 'async'
 
-is_vararg = partial is_any, 'vararg'
+is_vararg = partial get_meta_key, 'vararg'
 
 get_arity = (ns, method_name) ->
     [_, argums, _...] = get_method ns, method_name
@@ -56,7 +57,6 @@ register_protocol_impl = (protocol, impl) ->
         info "Redefining existing implementation of protocol '#{protocol}'"
 
     Implementations[protocol] = impl
-
 
 discover_impls = ->
     bootstrapper = require 'bootstrapper'
@@ -76,8 +76,36 @@ dispatch_impl = (protocol, opts=undefined) ->
     unless Protocols[protocol] and Implementations[protocol]
         discover_impls()
 
-    if Implementations[protocol]
-        Implementations[protocol] opts
+    if Protocols[protocol] and Implementations[protocol]
+        [cons] = Protocols[protocol].filter (m) -> m[0] is CONS
+        if cons
+            meta = get_meta protocol, CONS
+            if meta.concerns?.before
+                concerns = if is_array meta.concerns.before
+                    meta.concerns.before
+                else
+                    [meta.concerns.before]
+
+                # sorry for mutability FIXME later
+                xopts = [opts]
+                for f in concerns
+                    xopts.push (f xopts...)
+
+                opts = xopts
+
+        q = Implementations[protocol] (if is_array opts then opts else [opts])...
+
+        for own name, fun of q
+            fun.meta or= {}
+            fun.meta.name = name
+            fun.meta.protocol = protocol
+            fun.meta.arity = get_arity protocol, name
+
+            for k, v of (get_meta protocol, name)
+                fun.meta[k] = v
+
+
+        q
     else
         null
 
