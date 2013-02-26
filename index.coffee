@@ -1,11 +1,10 @@
 {info, warn, error, debug} = require 'console-logger'
 
+
 Implementations = {}
 Protocols = {}
 THIS = 'this'
 CONS = '*cons*'
-
-DEFAULT_PROTOCOLS = ['IDom', 'INucleus']
 
 {partial, is_array} = require 'libprotein'
 
@@ -15,8 +14,6 @@ get_protocol = (p) ->
         Protocols[p]
     else
         throw "No such registered protocol: '#{p}'"
-
-get_default_protocols = -> DEFAULT_PROTOCOLS
 
 register_protocol = (name, p) ->
     unless Protocols.hasOwnProperty p
@@ -117,7 +114,6 @@ dump_impls = ->
 module.exports = {
     register_protocol_impl
     register_protocol
-    get_default_protocols
     get_protocol
     dispatch_impl
     dump_impls
