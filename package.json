@@ -1,7 +1,7 @@
 {
   "name": "libprotocol",
   "description": "Clojure-like protocols for Javascript",
-  "version": "0.0.7",
+  "version": "0.0.71",
   "author": "E.Naumenko",
   "repository": {
     "type" : "git",
@@ -11,7 +11,6 @@
   "engine" : [ "node >=0.1.102" ],
   "main" : "./index.js",
   "dependencies" : {
-    "coffee-script" : "*",
     "libprotein": "*",
     "console-logger": "*"
   }
