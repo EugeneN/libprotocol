@@ -1,17 +1,31 @@
 {
   "name": "libprotocol",
   "description": "Clojure-like protocols for Javascript",
-  "version": "0.0.71",
-  "author": "E.Naumenko",
+  "version": "0.0.72",
+  "author": {
+    "name": "E.Naumenko"
+  },
   "repository": {
-    "type" : "git",
+    "type": "git",
     "url": "https://github.com/EugeneN/libprotocol"
   },
-  "scripts": {"postinstall": "coffee -c index.coffee"},
-  "engine" : [ "node >=0.1.102" ],
-  "main" : "./index.js",
-  "dependencies" : {
+  "scripts": {
+    "postinstall": "coffee -c index.coffee"
+  },
+  "engine": [
+    "node >=0.1.102"
+  ],
+  "main": "./index.js",
+  "dependencies": {
     "libprotein": "*",
     "console-logger": "*"
-  }
+  },
+  "readme": "libprotocol\n===========",
+  "readmeFilename": "README.md",
+  "_id": "libprotocol@0.0.71",
+  "dist": {
+    "shasum": "48eb312881d25491901bad4674c9e1b80e782215"
+  },
+  "_from": "libprotocol@",
+  "_resolved": "https://registry.npmjs.org/libprotocol/-/libprotocol-0.0.71.tgz"
 }
