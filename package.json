@@ -1,7 +1,7 @@
 {
   "name": "libprotocol",
-  "description": "Clojure-like protocols for Javascript",
-  "version": "0.0.74",
+  "description": "Interface-based multiple-dispatch polymorphism implementation library for Javascript",
+  "version": "0.0.75",
   "author": {
     "name": "E.Naumenko"
   },
