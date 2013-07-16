@@ -1,7 +1,7 @@
 {
   "name": "libprotocol",
   "description": "Interface-based multiple-dispatch polymorphism implementation library for Javascript",
-  "version": "0.0.75",
+  "version": "0.0.76",
   "author": {
     "name": "E.Naumenko"
   },
@@ -22,10 +22,8 @@
   },
   "readme": "libprotocol\n===========",
   "readmeFilename": "README.md",
-  "_id": "libprotocol@0.0.71",
+  "_id": "libprotocol@0.0.76",
   "dist": {
     "shasum": "48eb312881d25491901bad4674c9e1b80e782215"
-  },
-  "_from": "libprotocol@",
-  "_resolved": "https://registry.npmjs.org/libprotocol/-/libprotocol-0.0.71.tgz"
+  }
 }

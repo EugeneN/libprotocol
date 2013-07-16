@@ -1,9 +1,8 @@
 {info, warn, error, debug} = require 'console-logger'
 
-bt = require 'bootstrapper'
-
 # TODO storage service
-bt.PROTO or=
+# eg, put to local storage, update conditionally etc
+PROTO =
     Implementations: {}
     Protocols: {}
 
@@ -14,20 +13,20 @@ CONS = '*cons*'
 
 
 get_protocol = (p) ->
-    if bt.PROTO.Protocols.hasOwnProperty p
-        bt.PROTO.Protocols[p]
+    if PROTO.Protocols.hasOwnProperty p
+        PROTO.Protocols[p]
     else
         throw "No such registered protocol: '#{p}'"
 
 register_protocol = (name, p) ->
-    unless bt.PROTO.Protocols.hasOwnProperty p
+    unless PROTO.Protocols.hasOwnProperty p
         # debug "Registering new protocol '#{name}'"
-        bt.PROTO.Protocols[name] = p
+        PROTO.Protocols[name] = p
     else
         throw "Such protocol is already registered: '#{name}'"
 
 get_method = (ns, method_name) ->
-    m = bt.PROTO.Protocols[ns]?.filter ([mn]) -> mn is method_name
+    m = PROTO.Protocols[ns]?.filter ([mn]) -> mn is method_name
     if m.length is 1
         m[0]
     else
@@ -52,19 +51,23 @@ register_protocol_impl = (protocol, impl) ->
     unless get_protocol protocol
         throw "Can't register implementation for an unknown protocol: '#{protocol}'"
 
-    unless bt.PROTO.Implementations.hasOwnProperty protocol
+    unless PROTO.Implementations.hasOwnProperty protocol
         # debug "Registering an implementation for the protocol '#{protocol}'"
     else
         # FIXME
         # debug "Redefining existing implementation of protocol '#{protocol}'"
 
-    bt.PROTO.Implementations[protocol] = impl
+    PROTO.Implementations[protocol] = impl
 
 discover_protocols = ->
-    #debug "Starting bt.PROTO.Protocols discovery"
-    bootstrapper = require 'bootstrapper'
+    #debug "Starting PROTO.Protocols discovery"
+    modules = try
+        require.modules()
+    catch e
+    	# for backwards compatibility, remove this after 30/07/2013
+        window.bootstrapper.modules
 
-    for modname of bootstrapper.modules
+    for modname of modules
         exports = require modname
 
         if exports.protocols?.definitions
@@ -76,11 +79,11 @@ discover_protocols = ->
                 register_protocol_impl protocol, impl
 
 dispatch_impl = (protocol, opts=undefined) ->
-    unless bt.PROTO.Protocols[protocol] and bt.PROTO.Implementations[protocol]
+    unless PROTO.Protocols[protocol] and PROTO.Implementations[protocol]
         discover_protocols()
 
-    if bt.PROTO.Protocols[protocol] and bt.PROTO.Implementations[protocol]
-        [cons] = bt.PROTO.Protocols[protocol].filter (m) -> m[0] is CONS
+    if PROTO.Protocols[protocol] and PROTO.Implementations[protocol]
+        [cons] = PROTO.Protocols[protocol].filter (m) -> m[0] is CONS
         if cons
             meta = get_meta protocol, CONS
             if meta.concerns?.before
@@ -96,7 +99,7 @@ dispatch_impl = (protocol, opts=undefined) ->
 
                 opts = xopts
 
-        q = bt.PROTO.Implementations[protocol] (if is_array opts then opts else [opts])...
+        q = PROTO.Implementations[protocol] (if is_array opts then opts else [opts])...
 
         for own name, fun of q
             fun.meta or= {}
@@ -115,7 +118,7 @@ dispatch_impl = (protocol, opts=undefined) ->
 
 
 dump_impls = ->
-    debug "Currently registered bt.PROTO.Implementations:", bt.PROTO.Implementations
+    debug "Currently registered PROTO.Implementations:", PROTO.Implementations
 
 
 module.exports = {
