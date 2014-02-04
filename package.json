@@ -1,7 +1,7 @@
 {
   "name": "libprotocol",
   "description": "Interface-based multiple-dispatch polymorphism implementation library for Javascript",
-  "version": "0.0.76",
+  "version": "0.0.77",
   "author": {
     "name": "E.Naumenko"
   },
