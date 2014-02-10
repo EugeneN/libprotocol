@@ -72,16 +72,16 @@ register_exports = (exports) ->
 discover_protocols = ->
     #debug "Starting PROTO.Protocols discovery"
     if PROTOCOL_CACHE
-        info "Protocol cache available, skipping discovery"
-    else
-        modules = try
-            require.modules()
-        catch e
-            # for backwards compatibility, remove this after 30/07/2013
-            window.bootstrapper.modules
+        info "Protocol cache available, still forcing discovery"
+    
+    modules = try
+        require.modules()
+    catch e
+        # for backwards compatibility, remove this after 30/07/2013
+        window.bootstrapper.modules
 
-        for modname of modules
-            register_exports (require modname)
+    for modname of modules
+        register_exports (require modname)
 
 unique = (arr) ->
     a = {}
